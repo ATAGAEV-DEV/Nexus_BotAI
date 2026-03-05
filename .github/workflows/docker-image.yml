@@ -82,5 +82,6 @@ jobs:
               -v chroma_data:/python-app/chroma_db \
               -e DC_TOKEN="${{ secrets.DC_TOKEN }}" \
               -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              -e PERPLEXITY_API_KEY="${{ secrets.PERPLEXITY_API_KEY }}" \
+              -e AI_TOKEN_POLZA="${{ secrets.AI_TOKEN_POLZA }}" \
+              -e SCREENSHOT_CHANNEL_ID="${{ secrets.SCREENSHOT_CHANNEL_ID }}" \
               discordnexusbot:latest
