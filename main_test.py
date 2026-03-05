@@ -7,6 +7,7 @@ try:
     import apscheduler  # noqa: F401
     import asyncpg  # noqa: F401
     import discord
+    import openai  # noqa: F401
     import pytz  # noqa: F401
     import sqlalchemy  # noqa: F401
     from dotenv import load_dotenv  # noqa: F401
