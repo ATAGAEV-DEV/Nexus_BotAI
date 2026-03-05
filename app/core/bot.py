@@ -22,6 +22,7 @@ class DisBot(commands.Bot):
         await self.load_extension("app.cogs.admin")
         await self.load_extension("app.cogs.general")
         await self.load_extension("app.cogs.error_handler")
+        await self.load_extension("app.cogs.screenshots")
 
     async def on_ready(self) -> None:
         """Инициализация при подключении бота к Discord."""
