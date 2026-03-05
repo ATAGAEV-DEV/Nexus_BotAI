@@ -1,3 +1,4 @@
+import base64
 import re
 from datetime import datetime
 
@@ -25,3 +26,9 @@ def is_valid_url(url: str) -> bool:
 def format_dt(dt: datetime, style: str = "f") -> str:
     """Форматирует дату для Discord (<t:timestamp:style>)."""
     return f"<t:{int(dt.timestamp())}:{style}>"
+
+
+def encode_image_to_base64(image_path: str) -> str:
+    """Кодирует изображение в строку base64."""
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
