@@ -29,6 +29,7 @@ class Admin(commands.Cog):
 
     @commands.command(name="set_steam")
     @commands.guild_only()
+    @admin_or_owner()
     async def set_steam_channel(self, ctx: commands.Context) -> None:
         """Устанавливает текущий канал для уведомлений о раздачах Steam."""
         from app.data.request import add_steam_subscription
@@ -81,7 +82,6 @@ class Admin(commands.Cog):
 
     @commands.command(name="lol")
     @commands.guild_only()
-    @admin_or_owner()
     async def check_nick(self, ctx: commands.Context, nick: str | None = None) -> None:
         """Проверяет наличие ника в базе данных."""
         if not nick:
