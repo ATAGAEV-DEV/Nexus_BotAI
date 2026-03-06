@@ -29,7 +29,6 @@ class Admin(commands.Cog):
 
     @commands.command(name="set_steam")
     @commands.guild_only()
-    @admin_or_owner()
     async def set_steam_channel(self, ctx: commands.Context) -> None:
         """Устанавливает текущий канал для уведомлений о раздачах Steam."""
         from app.data.request import add_steam_subscription
@@ -54,7 +53,6 @@ class Admin(commands.Cog):
 
     @commands.command(name="nick")
     @commands.guild_only()
-    @admin_or_owner()
     async def add_nick(self, ctx: commands.Context, *nicks: str) -> None:
         """Добавляет один или несколько игровых ников (через пробел)."""
         if not nicks:
