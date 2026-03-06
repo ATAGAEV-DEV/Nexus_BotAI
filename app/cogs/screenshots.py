@@ -5,8 +5,7 @@ import discord
 from discord.ext import commands
 
 from app.core.config import settings
-from app.core.embeds import Embeds
-from app.data.request import add_nicknames, find_nickname, find_nicknames
+from app.data.request import add_nicknames, find_nicknames
 from app.services.image_to_text import ai_generate, generate_prompt
 
 
@@ -95,58 +94,6 @@ class Screenshots(commands.Cog):
                         parts.append("Остальные ники:\n" + " ".join(unknown))
 
                     await message.channel.send("\n\n".join(parts))
-
-    @commands.command(name="nick")
-    @commands.guild_only()
-    async def add_nick(self, ctx: commands.Context, *nicks: str) -> None:
-        """Добавляет один или несколько игровых ников (через пробел)."""
-        if not nicks:
-            embed = Embeds.error(
-                "Ошибка", "Укажите хотя бы один ник.\nПример: `?addnick Nick1 Nick2 Nick3`"
-            )
-            await ctx.send(embed=embed)
-            return
-
-        async with ctx.typing():
-            try:
-                added = await add_nicknames(nicknames=set(nicks))
-                if added:
-                    nick_list = "\n".join(f"• {n}" for n in added)
-                    embed = Embeds.success(
-                        "Ники добавлены",
-                        f"Добавлено: {len(added)} из {len(nicks)}\n{nick_list}",
-                    )
-                else:
-                    embed = Embeds.info("Ники", "Все указанные ники уже есть в базе.")
-                await ctx.send(embed=embed)
-            except Exception as e:
-                embed = Embeds.error("Ошибка", f"Произошла ошибка: {e}")
-                await ctx.send(embed=embed)
-
-    @commands.command(name="lol")
-    @commands.guild_only()
-    async def check_nick(self, ctx: commands.Context, nick: str | None = None) -> None:
-        """Проверяет наличие ника в базе данных."""
-        if not nick:
-            embed = Embeds.error("Ошибка", "Укажите ник.\nПример: `?checknick Nick1`")
-            await ctx.send(embed=embed)
-            return
-
-        async with ctx.typing():
-            try:
-                result = await find_nickname(nickname=nick)
-                if result:
-                    db_nick, description = result
-                    if description:
-                        embed = Embeds.success("Найден", f"**{db_nick}** — {description}")
-                    else:
-                        embed = Embeds.success("Найден", f"**{db_nick}**")
-                else:
-                    embed = Embeds.info("Не найден", f"Ник **{nick}** отсутствует в базе.")
-                await ctx.send(embed=embed)
-            except Exception as e:
-                embed = Embeds.error("Ошибка", f"Произошла ошибка: {e}")
-                await ctx.send(embed=embed)
 
 
 async def setup(bot: commands.Bot) -> None:
