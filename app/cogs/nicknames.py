@@ -99,13 +99,9 @@ class Nicknames(commands.Cog):
             try:
                 is_new = await upsert_nickname(nickname=nick, description=description)
                 if is_new:
-                    embed = Embeds.success(
-                        "Ник добавлен", f"**{nick}** — {description}"
-                    )
+                    embed = Embeds.success("Ник добавлен", f"**{nick}** — {description}")
                 else:
-                    embed = Embeds.success(
-                        "Описание обновлено", f"**{nick}** — {description}"
-                    )
+                    embed = Embeds.success("Описание обновлено", f"**{nick}** — {description}")
                 await ctx.send(embed=embed)
             except Exception as e:
                 embed = Embeds.error("Ошибка", f"Произошла ошибка: {e}")
