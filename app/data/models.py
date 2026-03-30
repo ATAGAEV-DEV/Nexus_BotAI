@@ -11,7 +11,7 @@ from sqlalchemy import (
     Text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncEngine, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import func
 
@@ -21,12 +21,17 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 SCHEMA = "public"
 
 
-def get_engine(schema: str) -> create_async_engine:
-    """Создает и возвращает асинхронный движок SQLAlchemy с указанной схемой."""
+def get_engine(schema: str) -> AsyncEngine:
+    """Создаёт и возвращает асинхронный движок SQLAlchemy с указанным схемой.
+
+    Устанавливает параметр search_path в соединении, чтобы все запросы выполнялись
+    в заданной схеме PostgreSQL.
+    """
     return create_async_engine(
-        str(DATABASE_URL),
+        DATABASE_URL,
         connect_args={"server_settings": {"search_path": schema}},
         pool_pre_ping=True,
+        pool_recycle=1800,
     )
 
 
