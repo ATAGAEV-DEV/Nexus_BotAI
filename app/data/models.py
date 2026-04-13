@@ -18,7 +18,7 @@ from sqlalchemy.sql import func
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-SCHEMA = "public"
+SCHEMA = "discord"
 
 
 def get_engine(schema: str) -> AsyncEngine:
