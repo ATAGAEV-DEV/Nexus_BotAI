@@ -15,23 +15,31 @@ def db_operation(operation_name: str) -> Callable:
     """Декоратор для устранения бойлерплейта БД-операций.
 
     Оборачивает функцию в async with session + try/except с таймаутом.
+    Делает до 3-х попыток в случае таймаута.
     Декорируемая функция должна принимать session: AsyncSession первым аргументом.
     """
 
     def decorator(func_inner: Callable) -> Callable:
         @wraps(func_inner)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            async with async_session() as session:
-                try:
-                    return await asyncio.wait_for(
-                        func_inner(session, *args, **kwargs), timeout=DB_TIMEOUT
-                    )
-                except TimeoutError:
-                    raise Exception(f"Таймаут при {operation_name}.")
-                except Exception as e:
-                    if isinstance(e, (ValueError, Exception)) and "Таймаут" in str(e):
-                        raise
-                    raise Exception(f"Ошибка при {operation_name}: {e}")
+            max_retries = 3
+            for attempt in range(1, max_retries + 1):
+                async with async_session() as session:
+                    try:
+                        return await asyncio.wait_for(
+                            func_inner(session, *args, **kwargs), timeout=DB_TIMEOUT
+                        )
+                    except TimeoutError:
+                        if attempt == max_retries:
+                            raise Exception(f"Таймаут при {operation_name}.")
+                        await asyncio.sleep(1)
+                    except Exception as e:
+                        if isinstance(e, (ValueError, Exception)) and "Таймаут" in str(e):
+                            if attempt == max_retries:
+                                raise
+                            await asyncio.sleep(1)
+                            continue
+                        raise Exception(f"Ошибка при {operation_name}: {e}")
 
         return wrapper
 
