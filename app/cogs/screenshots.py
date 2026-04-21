@@ -54,6 +54,9 @@ class Screenshots(commands.Cog):
                     os.unlink(tmp_path)
 
                 if not result:
+                    await message.reply(
+                        "⏰ Не удалось распознать ники на скриншоте."
+                    )
                     continue
 
                 nicknames = {line.strip() for line in result.strip().splitlines() if line.strip()}
