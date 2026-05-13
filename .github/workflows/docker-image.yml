@@ -31,6 +31,7 @@ jobs:
             --restart unless-stopped \
             -e DC_TOKEN="${{ secrets.DC_TOKEN }}" \
             -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            -e DATABASE_URL_LOCAL="${{ secrets.DATABASE_URL_LOCAL }}" \
             -e AI_TOKEN_POLZA="${{ secrets.AI_TOKEN_POLZA }}" \
             -e SCREENSHOT_CHANNEL_ID="${{ secrets.SCREENSHOT_CHANNEL_ID }}" \
             discordnexusbot:latest
