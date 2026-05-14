@@ -29,6 +29,8 @@ jobs:
         run: |
           docker run -d --name nexusbot \
             --restart unless-stopped \
+            --dns 8.8.8.8 \
+            --dns 1.1.1.1 \
             -e DC_TOKEN="${{ secrets.DC_TOKEN }}" \
             -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             -e DATABASE_URL_LOCAL="${{ secrets.DATABASE_URL_LOCAL }}" \
