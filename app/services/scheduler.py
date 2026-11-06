@@ -6,8 +6,6 @@ from app.core.embeds import Embeds
 from app.data.request import get_active_steam_subscriptions, is_game_new_and_save
 from app.services.steam import get_free_steam_games
 
-DB_TIMEOUT = 10
-
 
 async def check_steam_games(bot: discord.Client) -> None:
     """Проверяет новые бесплатные раздачи Steam и рассылает их по подпискам."""
@@ -42,5 +40,4 @@ def start_scheduler(bot: discord.Client) -> None:
     """Инициализирует и запускает асинхронный планировщик задач."""
     scheduler = AsyncIOScheduler(timezone=pytz.timezone("Europe/Moscow"))
     scheduler.add_job(check_steam_games, "cron", hour=12, minute=0, args=[bot])
-    # scheduler.add_job(check_steam_games, "interval", seconds=30, args=[bot])
     scheduler.start()
