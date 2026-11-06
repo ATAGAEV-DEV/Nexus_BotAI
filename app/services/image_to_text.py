@@ -22,7 +22,6 @@ async def ai_generate(message: list) -> Any | None:
     """Отправляет сообщение в AI и возвращает ответ."""
     try:
         completion = await client.chat.completions.create(
-            # model="google/gemini-2.0-flash-001",
             model="google/gemini-3.1-flash-lite-preview",
             messages=message,
             temperature=0.1,
