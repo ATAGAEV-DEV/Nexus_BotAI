@@ -11,15 +11,6 @@ class ErrorHandler(commands.Cog):
         """Инициализация Cog."""
         self.bot = bot
 
-    async def _send_response(self, message: discord.Message, response: str) -> None:
-        """Отправляет ответ в чат."""
-        if len(response) <= 4096:
-            embed = discord.Embed(description=response, color=discord.Color.blue())
-            await message.reply(embed=embed)
-        else:
-            for i in range(0, len(response), 2000):
-                await message.reply(response[i : i + 2000])
-
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
         """Обработка ошибок команд."""
