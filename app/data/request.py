@@ -4,8 +4,9 @@ from functools import wraps
 from typing import Any
 
 from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.data.models import DualSessionProxy, Nickname, SteamGame, SteamSubscription, async_session
+from app.data.models import Nickname, SteamGame, SteamSubscription, async_session
 
 DB_TIMEOUT = 10
 
@@ -47,7 +48,7 @@ def db_operation(operation_name: str) -> Callable:
 
 @db_operation("добавлении подписки на Steam")
 async def add_steam_subscription(
-    session: DualSessionProxy, server_id: int, channel_id: int
+    session: AsyncSession, server_id: int, channel_id: int
 ) -> SteamSubscription:
     """Добавляет или обновляет подписку на рассылку Steam раздач."""
     stmt = select(SteamSubscription).where(
@@ -67,7 +68,7 @@ async def add_steam_subscription(
 
 
 @db_operation("проверке игры Steam")
-async def is_game_new_and_save(session: DualSessionProxy, game_name: str) -> bool:
+async def is_game_new_and_save(session: AsyncSession, game_name: str) -> bool:
     """Если игры (по имени) нет в БД — сохраняет и возвращает True. Иначе False."""
     stmt = select(SteamGame.name).where(SteamGame.name == game_name)
     result = await session.execute(stmt)
@@ -79,7 +80,7 @@ async def is_game_new_and_save(session: DualSessionProxy, game_name: str) -> boo
 
 
 @db_operation("получении списка каналов для рассылки")
-async def get_active_steam_subscriptions(session: DualSessionProxy) -> list[int]:
+async def get_active_steam_subscriptions(session: AsyncSession) -> list[int]:
     """Возвращает список ID каналов, подписанных на раздачи."""
     stmt = select(SteamSubscription.channel_id).where(SteamSubscription.is_active.is_(True))
     result = await session.execute(stmt)
@@ -87,7 +88,7 @@ async def get_active_steam_subscriptions(session: DualSessionProxy) -> list[int]
 
 
 @db_operation("добавлении ников")
-async def add_nicknames(session: DualSessionProxy, nicknames: set[str]) -> list[str]:
+async def add_nicknames(session: AsyncSession, nicknames: set[str]) -> list[str]:
     """Добавляет ники в БД, пропуская уже существующие. Возвращает список добавленных."""
     stmt = select(Nickname.nickname).where(Nickname.nickname.in_(nicknames))
     result = await session.execute(stmt)
@@ -105,7 +106,7 @@ async def add_nicknames(session: DualSessionProxy, nicknames: set[str]) -> list[
 
 @db_operation("поиске ников в БД")
 async def find_nicknames(
-    session: DualSessionProxy, nicknames: set[str]
+    session: AsyncSession, nicknames: set[str]
 ) -> dict[str, tuple[str, str | None]]:
     """Ищет ники в БД (case-insensitive). Возвращает {nick_lower: (db_nickname, description)}."""
     lower_nicks = [n.lower() for n in nicknames]
@@ -117,7 +118,7 @@ async def find_nicknames(
 
 
 @db_operation("поиске ника в БД")
-async def find_nickname(session: DualSessionProxy, nickname: str) -> tuple[str, str | None] | None:
+async def find_nickname(session: AsyncSession, nickname: str) -> tuple[str, str | None] | None:
     """Ищет один ник в БД (case-insensitive). Возвращает (nickname, description) или None."""
     stmt = select(Nickname.nickname, Nickname.description).where(
         func.lower(Nickname.nickname) == nickname.lower()
@@ -128,7 +129,7 @@ async def find_nickname(session: DualSessionProxy, nickname: str) -> tuple[str, 
 
 
 @db_operation("подсчёте ников")
-async def count_nicknames(session: DualSessionProxy) -> int:
+async def count_nicknames(session: AsyncSession) -> int:
     """Возвращает общее количество ников в БД."""
     stmt = select(func.count()).select_from(Nickname)
     result = await session.execute(stmt)
@@ -136,7 +137,7 @@ async def count_nicknames(session: DualSessionProxy) -> int:
 
 
 @db_operation("добавлении/обновлении ника с описанием")
-async def upsert_nickname(session: DualSessionProxy, nickname: str, description: str) -> bool:
+async def upsert_nickname(session: AsyncSession, nickname: str, description: str) -> bool:
     """Добавляет ник с описанием или обновляет описание если ник уже есть.
 
     Возвращает True если ник был создан, False если обновлён.
@@ -156,7 +157,7 @@ async def upsert_nickname(session: DualSessionProxy, nickname: str, description:
 
 
 @db_operation("удалении ника")
-async def delete_nickname(session: DualSessionProxy, nickname: str) -> bool:
+async def delete_nickname(session: AsyncSession, nickname: str) -> bool:
     """Удаляет ник из БД (case-insensitive). Возвращает True если ник был найден и удалён."""
     stmt = select(Nickname).where(func.lower(Nickname.nickname) == nickname.lower())
     result = await session.execute(stmt)
