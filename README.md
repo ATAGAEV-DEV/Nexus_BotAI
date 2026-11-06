@@ -68,7 +68,7 @@
 ## 🏗 Технологический стек
 
 *   **Ядро**: `Python 3.13+` & `discord.py` (Cogs architecture)
-*   **AI**: `Gemini` через Polza AI API — распознавание текста со скриншотов
+*   **AI**: `Gemini` через OpenAI-совместимый API — распознавание текста со скриншотов
 *   **База данных**: `PostgreSQL` (SQLAlchemy + asyncpg) — хранение подписок, истории раздач и игровых ников
 *   **Планировщик**: `APScheduler` (AsyncIOScheduler) — ежедневные задачи по расписанию (МСК)
 *   **HTTP**: `aiohttp` — асинхронные запросы к RSS-лентам
@@ -99,7 +99,9 @@
 | :--- | :--- |
 | `DC_TOKEN` | Токен бота из [Discord Developer Portal](https://discord.com/developers/applications) |
 | `DATABASE_URL` | URL подключения к PostgreSQL (формат: `postgresql+asyncpg://user:pass@host:port/db`) |
-| `AI_TOKEN_POLZA` | API-ключ от [Polza AI](https://polza.ai/) для распознавания скриншотов |
+| `DATABASE_SCHEMA` | Схема PostgreSQL; если переменная отсутствует или пуста, используется `public` |
+| `AI_TOKEN` | API-ключ AI-провайдера для распознавания скриншотов |
+| `AI_PROVIDER_URL` | Базовый URL OpenAI-совместимого API выбранного AI-провайдера |
 | `SCREENSHOT_CHANNEL_ID` | ID Discord-канала для приёма скриншотов |
 
 ### Шаг 3: Сборка и запуск
