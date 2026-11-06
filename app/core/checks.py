@@ -1,8 +1,14 @@
+import os
 from collections.abc import Callable
 
 from discord.ext import commands
+from dotenv import load_dotenv
 
-ALLOWED_USERS = {"atagaev"}
+load_dotenv()
+
+ALLOWED_USERS = {
+    username.strip() for username in os.getenv("ALLOWED_USERS", "").split(",") if username.strip()
+}
 
 
 def admin_or_owner() -> Callable:
