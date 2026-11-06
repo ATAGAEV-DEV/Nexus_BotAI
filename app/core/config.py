@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 
@@ -11,9 +12,7 @@ class Config:
     def __init__(self) -> None:
         """Инициализация конфигурации и загрузка переменных окружения."""
         self.DC_TOKEN = os.getenv("DC_TOKEN")
-        self.DC_TOKEN_TEST = os.getenv("DC_TOKEN_TEST")
         self.DATABASE_URL = os.getenv("DATABASE_URL")
-        self.APS_COALESCE_MS = int(os.getenv("APS_COALESCE_MS", "50"))
         self.SCREENSHOT_CHANNEL_ID = int(os.getenv("SCREENSHOT_CHANNEL_ID", "0"))
 
         self._validate()
