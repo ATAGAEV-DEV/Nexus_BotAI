@@ -20,10 +20,3 @@ class Embeds:
     def info(title: str, description: str) -> discord.Embed:
         """Создает информационный Embed."""
         return discord.Embed(title=f"ℹ️ {title}", description=description, color=discord.Color.blue())
-
-    @staticmethod
-    def warning(title: str, description: str) -> discord.Embed:
-        """Создает предупреждающий Embed."""
-        return discord.Embed(
-            title=f"⚠️ {title}", description=description, color=discord.Color.orange()
-        )
