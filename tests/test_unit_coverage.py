@@ -1,5 +1,5 @@
 import os
-import sys
+import runpy
 from collections.abc import Callable
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
@@ -441,11 +441,17 @@ def test_main_starts_and_stops_without_token(monkeypatch: pytest.MonkeyPatch, ca
 
 
 def test_main_module_entrypoint(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Запуск файла как программы вызывает main ровно один раз."""
-    import runpy
+    """Запуск файла как программы создаёт бота и вызывает run ровно один раз."""
+    bot = MagicMock()
+    create_bot = MagicMock(return_value=bot)
+    monkeypatch.setattr(bot_module, "DisBot", create_bot)
+    monkeypatch.setattr(config_module.settings, "DC_TOKEN", "test-token")
 
-    monkeypatch.setattr(main, "main", MagicMock())
-    sys.modules["main"] = main
-    runpy.run_path(str(Path(main.__file__)), run_name="__main__")
-    main.main.assert_called_once()
-    raise SystemExit(0)
+    namespace = runpy.run_path(str(Path(main.__file__)), run_name="__main__")
+
+    create_bot.assert_called_once_with(
+        command_prefix="?",
+        intents=namespace["intents"],
+        help_command=None,
+    )
+    bot.run.assert_called_once_with("test-token")
