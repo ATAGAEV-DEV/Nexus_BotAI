@@ -10,7 +10,6 @@ from sqlalchemy import (
     String,
     Text,
 )
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import (
     AsyncAttrs,
     async_sessionmaker,
@@ -44,18 +43,6 @@ class Base(AsyncAttrs, DeclarativeBase):
     """Базовый класс для всех моделей, поддерживающий асинхронные атрибуты."""
 
     pass
-
-
-class User(Base):
-    """Модель пользователя Discord."""
-
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, nullable=False)
-    name = Column(String(50), nullable=False)
-    context = Column(JSONB)
-    datetime_insert = Column(DateTime, default=func.now())
 
 
 class SteamSubscription(Base):
